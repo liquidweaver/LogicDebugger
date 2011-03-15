@@ -15,7 +15,8 @@ namespace LogicDebugger {
 			return m_inner;
 		}
 	public:
-		Debug( const char* clause )
+		template <class T>
+		Debug( T clause )
 			: first( true ) {
 				for ( unsigned int i = 0; i < LogicDebugger::_stack.size(); ++i )
 					m_indention << indent;
@@ -24,27 +25,14 @@ namespace LogicDebugger {
 				m_result_indent = string( m_output.str().length(), ' ' );
 		}
 
-		Debug( const string& clause )
-			: first( true ) {
-				for ( unsigned int i = 0; i < LogicDebugger::_stack.size(); ++i )
-					m_indention << indent;
-				LogicDebugger::_stack.push( this );
-				m_output << m_indention.str() << clause << ": ";
-				m_result_indent = string( m_output.str().length(), ' ' );
-		}
-			
-
-		void operator()( const char* result ) {
+		template <class T>
+		void operator()( T result ) {
 			if ( first ) { 
 				m_output << result;
 				first = false;
 			}
 			else
 				m_output << '\n' << m_result_indent << result;
-		}
-
-		void operator()( const string& result ) {
-			(*this)( result.c_str() );
 		}
 
 		~Debug() {
